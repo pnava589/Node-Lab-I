@@ -3,14 +3,13 @@ const fs = require('fs');
 const path = require('path');
 const parser = require('body-parser');
 const express = require('express');
-const stocks = require('./scripts/data-provider.js')
 
-/*// for now, we will get our data by reading the provided json file
+// for now, we will get our data by reading the provided json file
 const jsonPath = path.join(__dirname, 'public',
 'stocks-complete.json');
 const jsonData = fs.readFileSync(jsonPath, 'utf8');
 // convert string data into JSON object
-const stocks = JSON.parse(jsonData);*/
+const stocks = JSON.parse(jsonData);
 // create an express app
 const app = express();
 // tell node to use json and HTTP header features in body-parser
