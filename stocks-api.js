@@ -1,9 +1,11 @@
 // first reference required modules
-const fs = require('fs');
+//const fs = require('fs');
 const path = require('path');
 const parser = require('body-parser');
 const express = require('express');
-const stocks = require('./scripts/data-provider.js')
+const stocks = require('./scripts/data-provider.js');
+const stockRouter = require('./scripts/stock-router');
+
 
 /*// for now, we will get our data by reading the provided json file
 const jsonPath = path.join(__dirname, 'public',
@@ -17,11 +19,13 @@ const app = express();
 app.use(parser.json());
 app.use(parser.urlencoded({extended: true}));
 app.use('/static', express.static(path.join(__dirname,'public'))); // handle requests for static resources
-
+stockRouter.handleSingleSymbol(stocks,app);
+stockRouter.handleNameSearch(stocks,app);
+stockRouter.handlePriceData(stocks,app);
 
 // return all the stocks when a root request arrives
 //app.route('/')
-    app.get('/stock/:symbol', (req,resp) => {
+  /*  app.get('/stock/:symbol', (req,resp) => {
     
         const symbolToFind = req.params.symbol.toUpperCase();
         const matches = stocks.filter(obj => symbolToFind === obj.symbol);
@@ -36,7 +40,7 @@ app.use('/static', express.static(path.join(__dirname,'public'))); // handle req
             const matches = stocks.filter( (obj) => obj.name.toLowerCase().includes(substring) );
             // return the matching stocks
             resp.json(matches);
-    });
+    });*/
     // Use express to listen to port
     let port = 8080;
     app.listen(port, () => {
