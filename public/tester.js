@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     async function putData(e) {
         e.preventDefault();
         const data = await fetchData(url,'PUT');
+        console.log(data);
         msg.textContent = data.message;        
     }
     
@@ -47,7 +48,8 @@ document.addEventListener("DOMContentLoaded", function() {
             };
 
             const resp = await fetch(url, options);
-            const data = await resp.json();    
+            const data = await resp.json();
+            console.log(data);    
             return data;
         }
         catch (err) {

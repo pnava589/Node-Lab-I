@@ -18,11 +18,10 @@ const app = express();
 // tell node to use json and HTTP header features in body-parser
 app.use(parser.json());
 app.use(parser.urlencoded({extended: true}));
-const provider = require('./scripts/data-provider.js');
-provider.retrieveCompanies(app);
-
 app.use('/static', express.static(path.join(__dirname,'public'))); // handle requests for static resources
-
+stockRouter.handleSingleSymbol(stocks,app);
+stockRouter.handleNameSearch(stocks,app);
+stockRouter.handlePriceData(stocks,app);
 
 // return all the stocks when a root request arrives
 //app.route('/')
