@@ -36,16 +36,13 @@ const updateSymbol = (stocks,req,resp)=>{
     } 
 };
 
-/*const insertSymbol =(stocks,req,resp)=>{
-    const symbolToInsert = req.params.symbol.toUpperCase();
-    if(symbolToInsert.length > 0)
-    {
-        stocks.push(symbolToInsert);
-    }
-    else{
-        resp.json(jsonMessage(`${symbolToInsert} was not added`))
-    }
-}*/
+const insertSymbol =(stocks,req,resp)=>{
+    const stockToInsert = req.body;
+    const symbolToInsert = req.body.symbol.toUpperCase();
+    stocks.push(stockToInsert);
+    resp.json(jsonMessage(`${symbolToInsert} added`));
+    
+};
 
 const findName = (stocks,req,resp)=>{
     // change user supplied substring to lower case
@@ -74,22 +71,29 @@ const findPrices = (stocks,req,resp)=>{
 };
 
 const deleteSymbol = (stocks,req,resp)=>{
-    const symbolToDelete = req.params.symbol.toUpperCase();
+    const symbolToDelete = req.body.symbol.toUpperCase();
     const stock = stocks.filter(obj => symbolToDelete === obj.symbol);
 
-    if(stock.length > 0)
-    {
-        _.pull(stocks,stock);
+    if(stock.length>0){
+
+        _.remove(stocks,function(e){
+            return e.symbol === symbolToDelete;
+        
+        });
+        resp.json(jsonMessage(`${symbolToDelete} was deleted`));
     }
     else{
         resp.json(jsonMessage(`${symbolToDelete} was not found`));
     }
-}
+
+    
+};
 
 module.exports={
     findSymbol,
     updateSymbol,
     findName,
+    insertSymbol,
     deleteSymbol,
     findPrices
 };

@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     async function putData(e) {
         e.preventDefault();
         const data = await fetchData(url,'PUT');
-        console.log(data);
+        
         msg.textContent = data.message;        
     }
     

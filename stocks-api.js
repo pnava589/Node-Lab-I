@@ -1,5 +1,3 @@
-// first reference required modules
-//const fs = require('fs');
 const path = require('path');
 const parser = require('body-parser');
 const express = require('express');

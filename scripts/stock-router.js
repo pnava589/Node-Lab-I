@@ -27,22 +27,17 @@ const handleSingleSymbol = (stocks,app) =>{
 
      .put((req,resp)=>{
         stockController.updateSymbol(stocks,req,resp);
-     });
+     })
 
-     /*app.put('/stock/:symbol', (req,resp) =>{
-          
+     
 
-        
-        //stockController.updateSymbol(stocks,req,resp);
-     });*/
-
-     /*.post((req,resp)=>{
+     .post((req,resp)=>{
          stockController.insertSymbol(stocks,req,resp);
-     });*/
+     })
  
-     /*.delete((req,resp)=>{
+     .delete((req,resp)=>{
          stockController.deleteSymbol(stocks,req,resp);
-     });*/
+     });
      
 
 };
@@ -53,7 +48,8 @@ const handleSingleSymbol = (stocks,app) =>{
 
 const handleNameSearch = (stocks,app) =>{
 
-    app.get('/stock/name/:substring', (req,resp) => {
+    app.route('/stock/name/:substring')
+    .get( (req,resp) => {
         
         stockController.findName(stocks,req,resp);
 
