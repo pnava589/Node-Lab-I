@@ -46,6 +46,84 @@
         </section>
 
     </aside>                              
-</main>    
+</main>
+<script>
+    const socket = io('http://localhost:3000');
+    
+
+    
+      /*const li = document.createElement('li');
+      const img = document.createElement('img');
+      const userBox = document.createElement('div');
+      const name = document.createElement('p');
+      const status = document.createElement('p');
+
+      status.innerHTML = 'online';
+      name.innerHTML = msg.Name;
+      userBox.setAttribute('class','name');
+      img.setAttribute('src',`https://randomuser.me/api/portraits/med/men/${msg.Id}.jpg`);
+      userBox.appendChild(name);
+      userBox.appendChild(status);
+      document.querySelector('#users ul').appendChild(img);
+      document.querySelector('#users ul').appendChild(userBox);
+      });*/
+      retrieveCompanies();
+      async function retrieveCompanies(){
+        const url = `https://randomuser.me/api`;
+        const response = await fetch(url);
+        const person = await response.json();
+        socket.emit('new user',person);
+        }
+
+        socket.on('user joined',list=>{
+                list.forEach(element => {
+                createListItem(element);
+                  
+                });
+                setNewUserMessage(list);
+        
+                
+            });
+        
+            function createListItem(element){
+                const li = document.createElement('li');
+                const img = document.createElement('img');
+                const userBox = document.createElement('div');
+                const name = document.createElement('p');
+                const status = document.createElement('p');
+                status.innerHTML = 'online';
+                name.innerHTML = element.Name;
+                userBox.setAttribute('class','name');
+                img.setAttribute('src',`https://randomuser.me/api/portraits/med/${element.Gender}/${element.Id}.jpg`);
+                img.setAttribute('alt',"avatar");
+                userBox.appendChild(name);
+                userBox.appendChild(status);
+                li.appendChild(img);
+                li.appendChild(userBox);
+                document.querySelector('#users ul').appendChild(li);
+                
+        }
+
+        function setNewUserMessage(list){
+            const item = document.createElement('li');
+            item.setAttribute('class','message-user');
+            const name = document.createElement('p');
+            name.setAttribute('class','message-data');
+            name.innerHTML = list[list.length-1].Name;
+            const span = document.createElement('span');
+            span.innerHTML = 'Today';
+            const hasJoined = document.createElement('p');
+            hasJoined.setAttribute('class','message-text');
+            hasJoined.innerHTML = 'has joined';
+            name.appendChild(span);
+            item.appendChild(name);
+            item.appendChild(hasJoined);
+            document.querySelector('.messages-body ul').appendChild(item);
+
+
+        }
+    
+
+</script>    
 </body>
 </html>

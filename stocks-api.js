@@ -7,6 +7,7 @@ const server = require('socket.io');
 
 
 
+
 /*// for now, we will get our data by reading the provided json file
 const jsonPath = path.join(__dirname, 'public',
 'stocks-complete.json');
@@ -25,18 +26,32 @@ app.use('/static', express.static(path.join(__dirname,'public'))); // handle req
 app.use('/socket.io', express.static(path.join(__dirname,'/node_modules/socket.io-client/dist/')));
 
 const io = new server(3000);
+const list =[];
 io.on('connection', socket => {
       console.log('new connection made with client');
+      
 
-        socket.on('username',msg=>{
-        console.log('username: '+msg);
-        socket.username =msg;
+        socket.broadcast.on('new user',user=>{
+          //console.log(user.results[0].name.first);
+          const name = user.results[0].name.first;
+          const rawGender = user.results[0].gender;
+          var gender = '';
+          if(rawGender=="male"){gender = 'men';}
+          else {gender = 'women';}
+          const id = Math.floor(Math.random() * 70) + 1;
+          const obj = {Name:name,Id:id,Gender:gender};
+          list.push(obj);
+          io.emit('user joined',list);
+          console.log(list);
+
+        
+        /*socket.username =msg;
         const obj = {message:"Has joined",user:msg};
         io.emit('user joined',obj);
         });
 
         socket.on('chat from client',msg=>{
-          io.emit('chat from server',{user:socket.username,message:msg});
+          io.emit('chat from server',{user:socket.username,message:msg});*/
         });
       
     
