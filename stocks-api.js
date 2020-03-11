@@ -3,6 +3,8 @@ const parser = require('body-parser');
 const express = require('express');
 const stocks = require('./scripts/data-provider.js');
 const stockRouter = require('./scripts/stock-router');
+const server = require('socket.io');
+
 
 
 /*// for now, we will get our data by reading the provided json file
@@ -20,6 +22,25 @@ const provider = require('./scripts/data-provider.js');
 provider.retrieveCompanies(app);
 
 app.use('/static', express.static(path.join(__dirname,'public'))); // handle requests for static resources
+app.use('/socket.io', express.static(path.join(__dirname,'/node_modules/socket.io-client/dist/')));
+
+const io = new server(3000);
+io.on('connection', socket => {
+      console.log('new connection made with client');
+
+        socket.on('username',msg=>{
+        console.log('username: '+msg);
+        socket.username =msg;
+        const obj = {message:"Has joined",user:msg};
+        io.emit('user joined',obj);
+        });
+
+        socket.on('chat from client',msg=>{
+          io.emit('chat from server',{user:socket.username,message:msg});
+        });
+      
+    
+    });
 
 
 // return all the stocks when a root request arrives
