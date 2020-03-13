@@ -18,14 +18,14 @@ app.use('/static', express.static(path.join(__dirname,'public'))); // handle req
 app.use('/socket.io', express.static(path.join(__dirname,'/node_modules/socket.io-client/dist/')));
 
 const io = new server(3000);
-const list =[];
+var list =[];
 io.on('connection', socket => {
   
       console.log('new connection made with client');
       
 
         socket.broadcast.on('new user',user=>{
-          //console.log(user.results[0].name.first);
+          
             socket.username = user.results[0].name.first;
             const rawGender = user.results[0].gender;
             var gender = '';
@@ -34,18 +34,19 @@ io.on('connection', socket => {
             const id = Math.floor(Math.random() * 70) + 1;
             const obj = {Name:socket.username ,Id:id,Gender:gender};
             list.push(obj);
-            const newobj = {users:list,user:obj};
-            io.emit('user joined',newobj);
-          console.log(newobj.users);
+            const newobj = {message:"has joined",users:list,user:obj,className:"message-user"}
+            io.emit('user',newobj);
+
 
         });
 
-        socket.on('client leaving',id=>{
-          const user = list.find(element => element.Id == id);
-          const index = list.indexOf(user);
-          io.emit("user left",user);
-          list.splice(index,1);
-          
+        socket.on('client leaving',name=>{
+          console.log(name);
+          const updatedUsers = list.filter(element => element.Name != name);
+          list = updatedUsers;
+          const person={Name:socket.username};
+          const obj = {message:'has left',users:list,user:person,className:"message-user"}
+          io.emit("user",obj); 
 
         });
 

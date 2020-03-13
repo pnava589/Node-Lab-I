@@ -59,28 +59,16 @@
         socket.emit('new user',person);
         }
 
-        socket.on('user joined',obj=>{
-               //const newobj = {List:list,Obj:obj};
-                /*const newUser = list[list.length-1];
-                myId = newUser.Id;
-                myName = newUser.Name;*/
-                console.log(obj.users);
-                createListItem(obj.user);
-                updateUsers(obj.users);
-                let ob = {message:'has joined',name:obj.user.Name}
-                createNewMessage('message-user',ob);
-
-            });
-
-        socket.on("user left",person=>{
-            console.log(person.Name);
-            let msg = {message:'has left',name:person.Name};
-            createNewMessage('message-user',msg);
-            
-        });
+        //const newobj = {message:'has joined',users:list,user:obj,className:"message-user"}
+        socket.on('user',obj=>{
+            console.log(obj);
+            myName = obj.user.Name;
+            createNewMessage(obj.className,obj);
+            updateUsers(obj.users);
+        })
         
         document.querySelector("#leave").addEventListener('click', e => {
-        socket.emit('client leaving', myId);
+        socket.emit('client leaving', myName);
 
         });
 
@@ -88,15 +76,16 @@
             e.preventDefault();
             const entry = document.querySelector("#entry");
             // send message to server
-            let msg = {message:entry.value,name:myName};
+            let person ={Name:myName};
+            let msg = {message:entry.value,user:person};
             createNewMessage('message-sent',msg);
             socket.emit('chat from client', entry.value);
             entry.value = "";
         });
 
         socket.on('chat from server', msg => {
-        
-            let obj = {message:msg.message,name:msg.user}
+            let person ={Name:myName};
+            let obj = {message:msg.message,user:person};
             createNewMessage('message-received',obj);
             
 
@@ -112,12 +101,14 @@
         });
 
     }
+
+    //const newobj = {message:'has joined',users:list,user:obj,className:"message-user"}
         function createNewMessage(className,obj){
             const item = document.createElement('li');
             item.setAttribute('class',className);
             const name = document.createElement('p');
             name.setAttribute('class','message-data');
-            name.innerHTML = obj.name;
+            name.innerHTML = obj.user.Name;
             const span = document.createElement('span');
             span.innerHTML = 'Today';
             const content = document.createElement('p');
