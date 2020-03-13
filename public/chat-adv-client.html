@@ -49,79 +49,103 @@
 </main>
 <script>
     const socket = io('http://localhost:3000');
-    
-
-    
-      /*const li = document.createElement('li');
-      const img = document.createElement('img');
-      const userBox = document.createElement('div');
-      const name = document.createElement('p');
-      const status = document.createElement('p');
-
-      status.innerHTML = 'online';
-      name.innerHTML = msg.Name;
-      userBox.setAttribute('class','name');
-      img.setAttribute('src',`https://randomuser.me/api/portraits/med/men/${msg.Id}.jpg`);
-      userBox.appendChild(name);
-      userBox.appendChild(status);
-      document.querySelector('#users ul').appendChild(img);
-      document.querySelector('#users ul').appendChild(userBox);
-      });*/
-      retrieveCompanies();
-      async function retrieveCompanies(){
+    var myId = 0;
+    var myName = '';
+      retrievePerson();
+      async function retrievePerson(){
         const url = `https://randomuser.me/api`;
         const response = await fetch(url);
         const person = await response.json();
         socket.emit('new user',person);
         }
 
-        socket.on('user joined',list=>{
-                list.forEach(element => {
-                createListItem(element);
-                  
-                });
-                setNewUserMessage(list);
-        
-                
+        socket.on('user joined',obj=>{
+               //const newobj = {List:list,Obj:obj};
+                /*const newUser = list[list.length-1];
+                myId = newUser.Id;
+                myName = newUser.Name;*/
+                console.log(obj.users);
+                createListItem(obj.user);
+                updateUsers(obj.users);
+                let ob = {message:'has joined',name:obj.user.Name}
+                createNewMessage('message-user',ob);
+
             });
+
+        socket.on("user left",person=>{
+            console.log(person.Name);
+            let msg = {message:'has left',name:person.Name};
+            createNewMessage('message-user',msg);
+            
+        });
         
+        document.querySelector("#leave").addEventListener('click', e => {
+        socket.emit('client leaving', myId);
+
+        });
+
+        document.querySelector("#chatForm").addEventListener('submit', e => {
+            e.preventDefault();
+            const entry = document.querySelector("#entry");
+            // send message to server
+            let msg = {message:entry.value,name:myName};
+            createNewMessage('message-sent',msg);
+            socket.emit('chat from client', entry.value);
+            entry.value = "";
+        });
+
+        socket.on('chat from server', msg => {
+        
+            let obj = {message:msg.message,name:msg.user}
+            createNewMessage('message-received',obj);
+            
+
+            document.querySelector('.messages-body ul').appendChild(li);
+        });
+        
+        function updateUsers(msg){
+            console.log(msg);
+            document.querySelector("#users ul").innerHTML ="";
+            msg.forEach(user => {
+            createListItem(user);
+            //document.querySelector("#users ul").appendChild(li2);
+        });
+
+    }
+        function createNewMessage(className,obj){
+            const item = document.createElement('li');
+            item.setAttribute('class',className);
+            const name = document.createElement('p');
+            name.setAttribute('class','message-data');
+            name.innerHTML = obj.name;
+            const span = document.createElement('span');
+            span.innerHTML = 'Today';
+            const content = document.createElement('p');
+            content.setAttribute('class','message-text');
+            content.innerHTML = obj.message;
+            name.appendChild(span);
+            item.appendChild(name);
+            item.appendChild(content);
+            document.querySelector('.messages-body ul').appendChild(item);
+
+        }
             function createListItem(element){
                 const li = document.createElement('li');
                 const img = document.createElement('img');
                 const userBox = document.createElement('div');
                 const name = document.createElement('p');
-                const status = document.createElement('p');
-                status.innerHTML = 'online';
                 name.innerHTML = element.Name;
                 userBox.setAttribute('class','name');
                 img.setAttribute('src',`https://randomuser.me/api/portraits/med/${element.Gender}/${element.Id}.jpg`);
                 img.setAttribute('alt',"avatar");
                 userBox.appendChild(name);
-                userBox.appendChild(status);
                 li.appendChild(img);
                 li.appendChild(userBox);
                 document.querySelector('#users ul').appendChild(li);
                 
         }
 
-        function setNewUserMessage(list){
-            const item = document.createElement('li');
-            item.setAttribute('class','message-user');
-            const name = document.createElement('p');
-            name.setAttribute('class','message-data');
-            name.innerHTML = list[list.length-1].Name;
-            const span = document.createElement('span');
-            span.innerHTML = 'Today';
-            const hasJoined = document.createElement('p');
-            hasJoined.setAttribute('class','message-text');
-            hasJoined.innerHTML = 'has joined';
-            name.appendChild(span);
-            item.appendChild(name);
-            item.appendChild(hasJoined);
-            document.querySelector('.messages-body ul').appendChild(item);
-
-
-        }
+      
     
 
 </script>    
