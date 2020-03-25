@@ -25,9 +25,8 @@ io.on('connection', socket => {
       
 
         socket.broadcast.on('new user',user=>{
-          
-            socket.username = user.results[0].name.first;
-            const rawGender = user.results[0].gender;
+            socket.username = user.name; 
+            const rawGender = user.apiResponse.results[0].gender;
             var gender = '';
             if(rawGender=="male"){gender = 'men';}
             else {gender = 'women';}
@@ -41,7 +40,6 @@ io.on('connection', socket => {
         });
 
         socket.on('client leaving',name=>{
-          console.log(name);
           const updatedUsers = list.filter(element => element.Name != name);
           list = updatedUsers;
           const person={Name:socket.username};
